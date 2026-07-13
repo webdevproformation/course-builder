@@ -24,52 +24,35 @@ final class MenuGenerator
             return;
         }
 
-        $document = new \DOMDocument('1.0', 'UTF-8');
-        $document->formatOutput = true;
-
-        $rootUl = $document->createElement('ul');
-        $document->appendChild($rootUl);
-
-        $rootLi = $document->createElement('li', 'Sommaire :');
-        $rootUl->appendChild($rootLi);
-
-        foreach (array_chunk($files, self::ITEMS_PER_GROUP, true) as $chunk) {
-            $start = array_key_first($chunk) + 1;
-
-            $ol = $document->createElement('ol');
-            $ol->setAttribute('start', (string) $start);
-
-            foreach ($chunk as $file) {
-                $link = str_replace(
-                    '.md',
-                    '.html',
-                    $this->repository->htmlFile($file)
-                );
-
-                $label = $this->repository->getTitleFromFilename($file);
-
-                $li = $document->createElement('li');
-
-                $a = $document->createElement('a');
-                $a->setAttribute('href', $link);
-                $a->appendChild(
-                    $document->createTextNode($label)
-                );
-
-                $li->appendChild($a);
-                $ol->appendChild($li);
+        $menu = "";
+        $i = 0 ;
+        foreach($files as $key => $file){
+            $link = htmlentities($this->repository->htmlFile($file));
+            $label = htmlentities($this->repository->getTitleFromFilename($file));
+            if($i === 0){
+                $menu .= "<ul>".PHP_EOL;
+                $menu .= "<li> Sommaire :".PHP_EOL;
+                $menu .= "<ol start='". $key+1 . "'>".PHP_EOL;
+            }else if($i % 5 === 0 && $i !== count($files) - 1){
+                $menu .= "</ol>".PHP_EOL;
+                $menu .= "</li>".PHP_EOL;
+                $menu .= "</ul>".PHP_EOL;
+                $menu .= "<ul>".PHP_EOL;
+                $menu .= "<li> &nbsp;".PHP_EOL;
+                $menu .= "<ol start='". $key+1 . "'>".PHP_EOL;
             }
-
-            $rootLi->appendChild($ol);
-        }
-
-        $menuPath = $this->rootDir. DIRECTORY_SEPARATOR . "menu.html";
-
-        file_put_contents(
-            $menuPath,
-            $document->saveHTML()
-        );
-
+            $menu .= "<li><a href='$link'>$label</a></li>". PHP_EOL;
+            if($i === count($files) - 1){
+                $menu .= "</ol>".PHP_EOL;
+                $menu .= "</li>".PHP_EOL;
+                $menu .= "</ul>".PHP_EOL;
+            }
+            $i++ ; 
+        } 
+         $menuPath = $this->rootDir. DIRECTORY_SEPARATOR . "menu.html";
+        if(file_exists($menuPath)) unlink($menuPath) ;
+        file_put_contents($menuPath , $menu);
         $this->logService->msg("✅ {$menuPath}");
+
     }
 }

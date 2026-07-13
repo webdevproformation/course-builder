@@ -46,7 +46,7 @@ final class MenuGenerator
                     $this->repository->htmlFile($file)
                 );
 
-                $label = pathinfo($file, PATHINFO_FILENAME);
+                $label = $this->repository->getTitleFromFilename($file);
 
                 $li = $document->createElement('li');
 

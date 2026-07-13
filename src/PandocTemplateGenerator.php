@@ -1,0 +1,153 @@
+<?php
+declare(strict_types=1);
+
+namespace CourseBuilder;
+
+/**
+ * Génère un template HTML Pandoc.
+ *
+ * Cette classe permet de créer le fichier template utilisé par Pandoc.
+ */
+final readonly class PandocTemplateGenerator
+{
+
+    public function __construct(
+        public string $filename = 'template.html'
+    ) {}
+
+    /**
+     * Génère le fichier template HTML.
+     *
+     * @return string Chemin du template généré.
+     */
+    public function generate(): string
+    {
+        $template = <<<'HTML'
+<!DOCTYPE html>
+<html lang="$lang$" xml:lang="$lang$"$if(dir)$ dir="$dir$"$endif$>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+
+  $for(author-meta)$
+    <meta name="author" content="$author-meta$" />
+  $endfor$
+
+  $if(date-meta)$
+    <meta name="dcterms.date" content="$date-meta$" />
+  $endif$
+
+  $if(keywords)$
+    <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$" />
+  $endif$
+
+  $if(description-meta)$
+    <meta name="description" content="$description-meta$" />
+  $endif$
+
+  <title>$if(title-prefix)$$title-prefix$ ÔÇô $endif$$pagetitle$</title>
+
+  <link rel='apple-touch-icon' sizes='57x57' href='assets/favicon/apple-icon-57x57.png'>
+  <link rel='apple-touch-icon' sizes='60x60' href='assets/favicon/apple-icon-60x60.png'>
+  <link rel='apple-touch-icon' sizes='72x72' href='assets/favicon/apple-icon-72x72.png'>
+  <link rel='apple-touch-icon' sizes='76x76' href='assets/favicon/apple-icon-76x76.png'>
+  <link rel='apple-touch-icon' sizes='114x114' href='assets/favicon/apple-icon-114x114.png'>
+  <link rel='apple-touch-icon' sizes='120x120' href='assets/favicon/apple-icon-120x120.png'>
+  <link rel='apple-touch-icon' sizes='144x144' href='assets/favicon/apple-icon-144x144.png'>
+  <link rel='apple-touch-icon' sizes='152x152' href='assets/favicon/apple-icon-152x152.png'>
+  <link rel='apple-touch-icon' sizes='180x180' href='assets/favicon/apple-icon-180x180.png'>
+  <link rel='icon' type='image/png' sizes='192x192'  href='assets/favicon/android-icon-192x192.png'>
+  <link rel='icon' type='image/png' sizes='32x32' href='assets/favicon/favicon-32x32.png'>
+  <link rel='icon' type='image/png' sizes='96x96' href='assets/favicon/favicon-96x96.png'>
+  <link rel='icon' type='image/png' sizes='16x16' href='assets/favicon/favicon-16x16.png'>
+  <link rel='manifest' href='assets/favicon/manifest.json' crossorigin='use-credentials'>
+  <meta name='msapplication-TileColor' content='#ffffff'>
+  <meta name='msapplication-TileImage' content='assets/favicon/ms-icon-144x144.png'><meta name='theme-color' content='#ffffff'>
+
+  <link rel='stylesheet' href='dist/style.css'>
+  <script defer src='dist/bundle.js'></script>  
+
+  <link href='assets/hightlight/highlight-espresso.css' rel='stylesheet' id='highlight'>
+</head>
+<body>
+  <nav id='menu' class='container menu'></nav>
+  <div class='container markdown-body'>
+
+  <nav class='nav-top'>
+    <li><a href='#menu' class='btn-nav'>&uarr; top</a></li>
+  </nav>
+  $for(include-before)$
+    $include-before$
+  $endfor$
+
+  $if(title)$
+    <header id="title-block-header">
+
+      <h1 class="title">$title$</h1>
+          
+        $if(subtitle)$
+          <p class="subtitle">$subtitle$</p>
+        $endif$
+
+        $for(author)$
+          <p class="author">$author$</p>
+        $endfor$
+
+        $if(date)$
+          <p class="date">$date$</p>
+        $endif$ 
+
+        $if(abstract)$
+          <div class="abstract">
+            <div class="abstract-title">
+              $abstract-title$
+            </div>
+            $abstract$
+          </div>
+        $endif$ 
+    </header>
+  $endif$
+
+  $if(toc)$
+    <nav id="$idprefix$TOC" role="doc-toc">
+      $if(toc-title)$
+        <h2 id="$idprefix$toc-title">$toc-title$</h2>
+      $endif$
+      $table-of-contents$
+    </nav>
+  $endif$
+
+  $body$
+
+    <footer class='text-center py-3 mb-3'>
+      malik.h@webdevpro.net
+    </footer>
+  </div>
+  $for(include-after)$
+    $include-after$
+  $endfor$
+</body>
+</html>
+HTML;
+
+        file_put_contents($this->filename, $template);
+
+        echo " fichier template.html créé" . PHP_EOL;
+
+        return $this->filename;
+    }
+
+    /**
+     * Supprime le template généré.
+     *
+     * @return void
+     */
+    public function delete(): void
+    {
+        if (file_exists($this->filename)) {
+            unlink($this->filename);
+
+            echo " fichier template.html supprimé" . PHP_EOL;
+        }
+    }
+}

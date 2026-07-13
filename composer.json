@@ -1,0 +1,8 @@
+{
+    "name": "malikh/course-builder",
+    "autoload": {
+        "psr-4": {
+            "CourseBuilder\\": "src/"
+        }
+    }
+}

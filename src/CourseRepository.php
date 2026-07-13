@@ -20,7 +20,6 @@ final class CourseRepository
 
     private const NO_LINK = "#";
 
-
     /**
      * @param string $srcDirectory Répertoire contenant les fichiers .md.
      */

@@ -8,7 +8,9 @@ use CourseBuilder\HtmlGenerator;
 use CourseBuilder\CourseRepository;
 use CourseBuilder\Log;
 
-$repository = new CourseRepository('parts');
+$dossier_contenant_mds = 'parts';
+
+$repository = new CourseRepository($dossier_contenant_mds);
 
 $options = getopt('A');
 

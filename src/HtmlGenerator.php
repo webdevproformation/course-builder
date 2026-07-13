@@ -171,40 +171,31 @@ final class HtmlGenerator
     private function generateHtmlFiles(): void
     {
 
-        $template = new PandocTemplateGenerator();
+        foreach ($this->recentFiles as $filename) {
 
-        $template->generate();
+            $source = self::TMP_DIRECTORY . '/' . $filename;
 
-        try {
+            $html = $this->repository->htmlFile($filename);
 
-            foreach ($this->recentFiles as $filename) {
+            $title = $this->repository->getTitleFromFilename($filename);
 
-                $source = self::TMP_DIRECTORY . '/' . $filename;
+            $command = $this->buildPandocCommand(
+                $source,
+                $html,
+                $title,
+                __DIR__ . "/../templates/pandoc.html",
+                $this->getPandocVariables()
+            );
 
-                $html = $this->repository->htmlFile($filename);
+            exec($command . ' 2>&1', $output, $exitCode);
 
-                $title = $this->repository->getTitleFromFilename($filename);
-
-                $command = $this->buildPandocCommand(
-                    $source,
-                    $html,
-                    $title,
-                    $template->filename,
-                    $this->getPandocVariables()
+            if ($exitCode !== 0) {
+                throw new RuntimeException(
+                    implode(PHP_EOL, $output)
                 );
-
-                exec($command . ' 2>&1', $output, $exitCode);
-
-                if ($exitCode !== 0) {
-                    throw new RuntimeException(
-                        implode(PHP_EOL, $output)
-                    );
-                } else {
-                    $this->logService->msg("✅ $html");
-                }
+            } else {
+                $this->logService->msg("✅ $html");
             }
-        } finally {
-            $template->delete();
         }
     }
 

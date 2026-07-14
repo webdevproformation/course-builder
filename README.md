@@ -1,5 +1,6 @@
-# Installation
+# Générer des `html` depuis des `md`
 
+## Installation
 
 ```sh
 git init
@@ -11,7 +12,7 @@ cd build
 composer dump-autoload
 ```
 
-# Utilisation
+## Utilisation
 
 ```sh
 cd ..
@@ -20,4 +21,14 @@ php build/build.php -A
 
 # uniquement les fichiers modifiés depuis 15 min
 php build/build.php
+```
+
+---
+
+# Renommer / renuméroter les fichiers .md via grag and drop
+
+```sh
+cd build
+
+php -S localhost:1234 rename.php
 ```

@@ -157,7 +157,7 @@ final class HtmlGenerator
 
             MD;
 
-            $content = $content . $navigation;
+            $content = $content . "<br>" . $navigation;
 
             file_put_contents($tmpFile, $content);
         }

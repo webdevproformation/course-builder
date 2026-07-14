@@ -148,16 +148,11 @@ final class HtmlGenerator
             $after = $this->repository->next($filename);
 
 
-            $navigation = <<<MD
+            $links = PHP_EOL. "\n## Navigation" . PHP_EOL;
+            $links .= "← " . "[$before]($before){.btn-nav}" . PHP_EOL;
+            $links .= "[$after]($after){.btn-nav}". " →" . PHP_EOL;
 
-            ## Navigation
-
-            ← [$before]($before){.btn-nav}
-            [$after]($after){.btn-nav} →
-
-            MD;
-
-            $content = $content . "<br><br>" . $navigation;
+            $content = $content . "<br><br>" . $links;
 
             file_put_contents($tmpFile, $content);
         }
